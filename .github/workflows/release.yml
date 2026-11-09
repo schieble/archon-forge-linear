@@ -1,0 +1,33 @@
+# On a v* tag: test, build the plugin for every platform Archon's CLI ships on, and publish
+# archon-forge-linear-<os>-<arch>[.exe] with checksums.txt, the assets `archon plugin add`
+# downloads and verifies.
+name: release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.12
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun test
+      - name: Build
+        run: |
+          mkdir -p dist
+          for target in linux-x64 linux-arm64 darwin-x64 darwin-arm64 windows-x64; do
+            out=dist/archon-forge-linear-$target
+            [[ $target == windows-* ]] && out=$out.exe
+            bun build --compile --target=bun-$target src/plugin.ts --outfile "$out"
+          done
+          cd dist && sha256sum archon-forge-linear-* > checksums.txt && cat checksums.txt
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --title "$GITHUB_REF_NAME" --notes "archon plugin add ${GITHUB_REPOSITORY}@${GITHUB_REF_NAME}"

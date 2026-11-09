@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "kind": "forge",
+  "name": "forge-linear",
+  "description": "Work items in Linear: issues, comments, labels and state for the SDLC pack. Pull requests stay with your code forge.",
+  "executable": "archon-forge-linear"
+}
