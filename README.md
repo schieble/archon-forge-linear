@@ -73,7 +73,7 @@ never equals the text sent.
 
 The pack, as Archon ships it, expects a queue's `repo_host`/`repo_path` to hold both the work items
 and the pull requests. Keeping work items in Linear and code on GitHub also needs changes to the
-pack. They are described in an issue on coleam00/Archon (link to follow).
+pack. They are described in [coleam00/Archon#5424](https://github.com/coleam00/Archon/issues/5424).
 
 ## Development
 
